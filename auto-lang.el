@@ -664,7 +664,7 @@ IN-LIST is e.g.:
   (narrow-to-region
    (progn
      (goto-char (point-min))
-     (or (search-forward 'mail-header-separator nil t)
+     (or (search-forward mail-header-separator nil t)
          (point-max)))
    (point-max)))
 
@@ -702,7 +702,7 @@ to customization/mode and run `al-lang-conf'."
                       (al-highlight-winner-lang))))
             (save-excursion ; buffer mode in Gnus
               (save-restriction
-                (al-gnus-narrow-to-body)
+                (al-message-narrow-to-body)
                 (al-lang-conf (al-guess-buffer-language))
                 (if (eq al-use-goodies 'flyspell)
                     (al-do-flyspell-maybe))
