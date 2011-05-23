@@ -1,0 +1,17 @@
+#+TITLE: auto-lang.el enhancements
+
+* Origin
+
+This is a collection of enhancements to the auto-lang.el package for
+Emacs.  Originally, the packages has been hosted at
+[[http://www.marquardt-home.de/auto-lang.el]], and its EmacsWiki home is
+at [[http://www.emacswiki.org/emacs/AutoLangMode]].
+
+* Enhancements
+
+  * Reduced flickering when flyspell is enabled
+
+  * Fixes to GNUS message-mode integration
+
+#+STARTUP: odd
+#+Options: num:nil
