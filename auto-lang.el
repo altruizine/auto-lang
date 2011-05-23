@@ -550,19 +550,30 @@ I don't know what FORMS does."
         (progn ,@forms)
       (fset 'message old-message))))
 
+(defvar al-flyspell-current-dict nil)
+
 (defun al-do-flyspell-maybe ()
   "Run flyspell if it makes sense.
 Run flyspell in the buffer or narrowed region if enough confidence
 and not in message header."
-  (if al-has-confidence
-      (if al-current-winner-lang-dict-avail
-          (if (fboundp 'flyspell-mode)
-              (progn
-                (let ((flyspell-issue-welcome-flag nil))
-                  (flyspell-mode 1)
-                  (al-mute-message
-                   (flyspell-buffer))))
-    (al-flyspell-off)))))
+  (when (fboundp 'flyspell-mode)
+    (if (and al-has-confidence al-current-winner-lang-dict-avail)
+	;; flyspell should be on with current dict.  reset it if it isn't.
+	(when (or (not flyspell-mode)
+		  (not (equal al-flyspell-current-dict 
+			      ispell-local-dictionary)))
+	  (setq al-flyspell-current-dict ispell-local-dictionary)
+	  (al-flyspell-off)
+	  (let ((flyspell-issue-welcome-flag nil))
+	    (flyspell-mode 1)
+	    (lexical-let ((min (point-min))
+			  (max (point-max)))
+	      (run-with-idle-timer 0 nil (lambda ()
+					   (al-mute-message
+					    (flyspell-region min max)))))))
+      ;; flyspell should be off.
+      (when flyspell-mode
+	(al-flyspell-off)))))
 
 (defun al-check-base-diff (first-list second-list)
   "Check if the confidences of FIRST-LIST and SECOND-LIST differ enough."
@@ -690,10 +701,10 @@ to customization/mode and run `al-lang-conf'."
           (if al-check-paragraph ; paragraph mode in Gnus
               (save-excursion
                 (save-restriction
-                  ;; make sure only the current paragraph gets flyspelled
-                  ;; (and other pars have their overlays removed):
-                  (if (eq al-use-goodies 'flyspell)
-                      (al-flyspell-off))
+                  ;; ;; make sure only the current paragraph gets flyspelled
+                  ;; ;; (and other pars have their overlays removed):
+                  ;; (if (eq al-use-goodies 'flyspell)
+                  ;;     (al-flyspell-off))
                   (al-narrow-to-paragraph)
                   (al-lang-conf (al-guess-buffer-language))
                   (if (eq al-use-goodies 'flyspell)
