@@ -566,11 +566,11 @@ and not in message header."
 	  (al-flyspell-off)
 	  (let ((flyspell-issue-welcome-flag nil))
 	    (flyspell-mode 1)
-	    (lexical-let ((min (point-min))
-			  (max (point-max)))
+	    (lexical-let ((minp (point-min))
+			  (maxp (point-max)))
 	      (run-with-idle-timer 0 nil (lambda ()
 					   (al-mute-message
-					    (flyspell-region min max)))))))
+					    (flyspell-region minp maxp)))))))
       ;; flyspell should be off.
       (when flyspell-mode
 	(al-flyspell-off)))))
